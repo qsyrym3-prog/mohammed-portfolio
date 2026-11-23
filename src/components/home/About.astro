@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../../assets/portrait.png';
+import { t, type Lang } from '../../i18n/site';
+interface Props { lang: Lang }
+const s = t[Astro.props.lang];
+const [lead, ...rest] = s.about.paragraphs;
+---
+
+<section id="about" class="grain bg-sand py-24 md:py-32" aria-labelledby="about-title">
+  <div class="container-x grid items-center gap-14 md:grid-cols-12 md:gap-10">
+    <div class="reveal mx-auto w-full max-w-[22rem] md:col-span-5 md:max-w-none md:px-6">
+      <div class="arch mx-auto w-[86%] pt-4">
+        <div class="arch-inner aspect-[4/5] bg-cream">
+          <Image src={portrait} alt={s.about.imageAlt} widths={[360, 560, 800, 1100]} sizes="(min-width: 768px) 36vw, 80vw" class="h-full w-full object-cover object-top" />
+        </div>
+      </div>
+    </div>
+
+    <div class="md:col-span-7 md:ps-6">
+      <p class="eyebrow reveal">{s.about.eyebrow}</p>
+      <h2 id="about-title" class="display reveal mt-4 text-[clamp(2.2rem,6vw,4.2rem)]" style="--delay:80ms">{s.about.title}</h2>
+      <p class="reveal mt-8 text-xl leading-relaxed text-ink md:text-2xl" style="--delay:140ms">{lead}</p>
+      <div class="mt-6 space-y-4 text-[1.05rem] leading-[1.9] text-muted">
+        {rest.map((p, i) => <p class="reveal" style={`--delay:${180 + i * 40}ms`}>{p}</p>)}
+      </div>
+
+      <dl class="mt-12 grid grid-cols-3 border-t border-line pt-8">
+        {s.about.stats.map((st, i) => (
+          <div class:list={['reveal px-2 first:ps-0', i > 0 && 'border-s border-line ps-4 md:ps-6']} style={`--delay:${i * 100}ms`}>
+            <dt class="sr-only">{st.label}</dt>
+            <dd>
+              <span class="num block text-[clamp(2.6rem,7vw,4.2rem)] leading-none" dir="ltr">
+                {st.prefix}<span data-count={st.value}>{st.value}</span>
+              </span>
+              <span class="mt-2 block text-sm text-muted md:text-base" aria-hidden="true">{st.label}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>

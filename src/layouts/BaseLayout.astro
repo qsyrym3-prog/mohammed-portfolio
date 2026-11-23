@@ -1,0 +1,135 @@
+---
+// Only the Arabic + Latin character sets and the weights actually used (keeps the page fast)
+import '@fontsource/ibm-plex-sans-arabic/arabic-400.css';
+import '@fontsource/ibm-plex-sans-arabic/arabic-700.css';
+import '@fontsource/ibm-plex-sans-arabic/latin-400.css';
+import '@fontsource/ibm-plex-sans-arabic/latin-700.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-500-italic.css';
+import '@fontsource/inter/latin-400.css';
+import '@fontsource/inter/latin-500.css';
+import plexArabic700 from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-700-normal.woff2?url';
+import plexArabic400 from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url';
+import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import cormorant600 from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2?url';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { t, contact, type Lang } from '../i18n/site';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+  /** path of this page without the /en prefix, e.g. "/" or "/projects/01-lino-enab/" */
+  path: string;
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>;
+}
+
+const { lang, path, jsonLd } = Astro.props;
+const s = t[lang];
+const title = Astro.props.title ?? s.meta.title;
+const description = Astro.props.description ?? s.meta.description;
+const site = Astro.site!;
+const arUrl = new URL(path, site).href;
+const enUrl = new URL(`/en${path}`, site).href;
+const canonical = lang === 'ar' ? arUrl : enUrl;
+const ogImage = new URL(Astro.props.ogImage ?? '/og.jpg', site).href;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Mohammed Qasir',
+  alternateName: 'محمد قصير',
+  jobTitle: 'Photographer & Content Creator',
+  url: site.href,
+  image: new URL('/og.jpg', site).href,
+  email: `mailto:${contact.email}`,
+  telephone: '+966500325760',
+  address: { '@type': 'PostalAddress', addressLocality: 'Jeddah', addressCountry: 'SA' },
+  sameAs: [contact.instagram, contact.tiktok],
+  knowsAbout: ['Product photography', 'Event photography', 'Sports photography', 'Restaurant video', 'Graphic design'],
+};
+---
+
+<!doctype html>
+<html lang={s.htmlLang} dir={s.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {(lang === 'ar' ? [plexArabic700, plexArabic400] : [cormorant600, inter400]).map((f) => (
+      <link rel="preload" href={f} as="font" type="font/woff2" crossorigin />
+    ))}
+    <meta name="description" content={description} />
+    <meta name="keywords" content="مصور منتجات جدة, تصوير فعاليات جدة, تصوير مطاعم وكافيهات, مصور فوتوغرافي جدة, Jeddah photographer, product photography Jeddah, event photography Jeddah" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="ar" href={arUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={arUrl} />
+    <meta name="theme-color" content="#F3EDE3" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mohammed Qasir — محمد قصير" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_SA' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd ?? person)} />
+  </head>
+  <body class="min-h-dvh">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:start-3 focus:z-[70] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-cream">{s.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <WhatsAppFab lang={lang} />
+
+    <script>
+      // Reveal on scroll + animated counters (respects reduced motion)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            const el = e.target as HTMLElement;
+            el.classList.add('is-visible');
+            io.unobserve(el);
+            if (el.dataset.count) {
+              const end = Number(el.dataset.count);
+              if (reduce) { el.textContent = String(end); continue; }
+              const start = performance.now();
+              const dur = 1400;
+              const step = (now: number) => {
+                const p = Math.min(1, (now - start) / dur);
+                el.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 3))));
+                if (p < 1) requestAnimationFrame(step);
+              };
+              requestAnimationFrame(step);
+            }
+          }
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+      );
+      document.querySelectorAll('.reveal, [data-count]').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

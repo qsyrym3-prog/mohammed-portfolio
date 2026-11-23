@@ -1,0 +1,117 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { t, pathFor, type Lang } from '../../i18n/site';
+import { getProjects, pad2 } from '../../lib/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t[lang];
+const projects = await getProjects();
+const filters = ['all', 'products', 'restaurants', 'events'] as const;
+---
+
+<section id="works" class="py-24 md:py-32" aria-labelledby="works-title">
+  <div class="container-x">
+    <div class="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="eyebrow reveal">{s.works.eyebrow}</p>
+        <h2 id="works-title" class="display reveal mt-3 text-[clamp(3rem,10vw,7rem)]" style="--delay:80ms">{s.works.title}</h2>
+      </div>
+      <div class="reveal -mx-5 overflow-x-auto px-5 [scrollbar-width:none] md:-mx-10 md:px-10 lg:mx-0 lg:px-0 [&::-webkit-scrollbar]:hidden" style="--delay:140ms">
+        <div role="group" aria-label={s.works.title} class="flex w-max gap-2" id="work-filters">
+          {filters.map((f, i) => (
+            <button type="button" data-filter={f} aria-pressed={i === 0 ? 'true' : 'false'} class="filter-btn whitespace-nowrap rounded-full border border-line px-4 py-2.5 text-sm transition-colors hover:border-terra hover:text-terra-dark">
+              {s.works.filters[f]}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <ul id="work-grid" class="mt-14 grid gap-x-8 gap-y-14 md:mt-20 md:grid-cols-2 md:gap-y-20">
+      {projects.map((p) => {
+        const d = p.data;
+        return (
+          <li data-category={d.category} class="work-card reveal">
+            <a href={pathFor(lang, `/projects/${p.id}/`)} class="group block" aria-label={`${d.title[lang]} — ${s.works.view}`}>
+              <div class="relative overflow-hidden rounded-[2px] bg-sand">
+                <Picture
+                  src={d.cover}
+                  formats={['avif', 'webp']}
+                  widths={[480, 800, 1200]}
+                  sizes="(min-width: 768px) 46vw, 92vw"
+                  alt={s.project.coverAlt(d.title[lang])}
+                  class="zoom-img aspect-[4/3] w-full object-cover"
+                />
+                <span class="absolute top-4 start-4 inline-flex items-center gap-1.5 rounded-full bg-cream/90 px-3 py-1 text-xs font-medium text-ink backdrop-blur-sm">
+                  {d.type !== 'photo' && <Icon name="video" size={14} />}
+                  {s.works.types[d.type]}
+                </span>
+              </div>
+              <div class="mt-5 flex items-start gap-5 border-b border-line pb-5">
+                <span class="num text-4xl leading-none md:text-5xl">{pad2(d.order)}</span>
+                <div class="min-w-0 flex-1">
+                  <h3 class="text-xl font-medium leading-snug transition-colors group-hover:text-terra-dark md:text-2xl">{d.title[lang]}</h3>
+                  <p class="mt-1.5 text-sm text-muted">
+                    {d.client[lang]} · {s.categories[d.category]}{d.sports && ` · ${s.works.sports}`}
+                  </p>
+                </div>
+                <span class="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line text-terra transition-colors group-hover:border-terra group-hover:bg-terra group-hover:text-on-terra">
+                  <Icon name="arrow" size={18} class="rtl:-scale-x-100" />
+                </span>
+              </div>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .filter-btn[aria-pressed='true'] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-cream);
+  }
+  .work-card.is-hidden {
+    display: none;
+  }
+  /* odd number of projects → the last one becomes a wide feature card */
+  @media (min-width: 768px) {
+    .work-card:last-child:nth-child(odd) {
+      grid-column: span 2;
+    }
+    .work-card:last-child:nth-child(odd) img {
+      aspect-ratio: 21 / 9;
+    }
+  }
+  .work-card.pop {
+    animation: pop 0.6s var(--ease-soft) both;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('#work-filters .filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('#work-grid .work-card');
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const f = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      cards.forEach((c) => {
+        const show = f === 'all' || c.dataset.category === f;
+        c.classList.toggle('is-hidden', !show);
+        c.classList.remove('pop');
+        if (show) {
+          c.classList.add('is-visible');
+          void c.offsetWidth;
+          c.classList.add('pop');
+        }
+      });
+    }),
+  );
+</script>

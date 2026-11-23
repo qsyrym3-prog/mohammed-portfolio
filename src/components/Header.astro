@@ -1,0 +1,83 @@
+---
+import Icon from './Icon.astro';
+import { t, waLink, pathFor, type Lang } from '../i18n/site';
+
+interface Props { lang: Lang; path: string }
+const { lang, path } = Astro.props;
+const s = t[lang];
+const home = pathFor(lang, '/');
+const otherLang: Lang = lang === 'ar' ? 'en' : 'ar';
+const switchHref = pathFor(otherLang, path);
+const links = [
+  { href: `${home}#works`, label: s.nav.works },
+  { href: `${home}#services`, label: s.nav.services },
+  { href: `${home}#about`, label: s.nav.about },
+  { href: `${home}#contact`, label: s.nav.contact },
+];
+---
+
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-500">
+  <div class="container-x flex h-16 items-center justify-between gap-4 md:h-20">
+    <a href={home} class="flex items-baseline gap-2 text-ink" aria-label={s.name}>
+      <span class="serif text-2xl leading-none font-semibold tracking-tight md:text-[1.7rem]">MQ</span>
+      <span class="hidden h-4 w-px bg-line sm:block"></span>
+      <span class="hidden text-sm font-medium sm:block">{s.name}</span>
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-8 text-[0.95rem]">
+        {links.map((l) => (
+          <li><a href={l.href} class="relative py-2 text-ink/80 transition-colors hover:text-terra after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-center after:scale-x-0 after:bg-terra after:transition-transform after:duration-300 hover:after:scale-x-100">{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={switchHref} hreflang={otherLang} lang={otherLang} aria-label={s.langSwitchLabel} class="grid h-10 min-w-10 place-items-center rounded-full border border-line px-3 text-sm font-medium transition-colors hover:border-terra hover:text-terra">{s.langSwitch}</a>
+      <a href={waLink(s.waMessage)} target="_blank" rel="noopener" aria-label={s.waFab} class="hidden h-10 items-center gap-2 rounded-full bg-terra px-4 text-sm font-medium text-on-terra transition-colors hover:bg-terra-dark sm:inline-flex">
+        <Icon name="whatsapp" size={18} />
+        <span>{lang === 'ar' ? 'واتساب' : 'WhatsApp'}</span>
+      </a>
+      <button id="menu-btn" type="button" class="grid h-10 w-10 place-items-center rounded-full border border-line md:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label={s.menu}>
+        <Icon name="menu" size={20} />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-cream/97 backdrop-blur-md md:hidden">
+    <ul class="container-x flex flex-col py-4">
+      {links.map((l, i) => (
+        <li><a href={l.href} class="flex items-center justify-between border-b border-line/70 py-4 text-lg last:border-0"><span>{l.label}</span><span class="num text-base">{String(i + 1).padStart(2, '0')}</span></a></li>
+      ))}
+      <li class="pt-4"><a href={waLink(s.waMessage)} target="_blank" rel="noopener" class="btn btn-primary w-full"><Icon name="whatsapp" size={18} />{lang === 'ar' ? 'تواصل على الواتساب' : 'Message on WhatsApp'}</a></li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  #site-header.scrolled {
+    background-color: rgb(243 237 227 / 0.78);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    box-shadow: 0 1px 0 rgb(217 204 185 / 0.8);
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const btn = document.getElementById('menu-btn')!;
+  const menu = document.getElementById('mobile-menu')!;
+  const setOpen = (open: boolean) => {
+    btn.setAttribute('aria-expanded', String(open));
+    menu.classList.toggle('hidden', !open);
+    if (open) header.classList.add('scrolled');
+    else onScroll();
+  };
+  btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+</script>

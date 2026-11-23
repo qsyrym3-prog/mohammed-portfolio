@@ -1,0 +1,155 @@
+---
+import { Picture } from 'astro:assets';
+import { t, waLink, pathFor, type Lang } from '../../i18n/site';
+import { getProjects, pad2 } from '../../lib/projects';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t[lang];
+
+// Cover slideshow = the cover photo of each project. Order of the slides (by folder name);
+// projects not listed here are added at the end automatically.
+const preferred = ['04-rixos-national-day', '01-lino-enab', '05-hybrid-marathon-rixos', '02-smash-burger', '06-f4-aramco', '03-coffee-mood', '07-yasreen-ceremony'];
+const projects = await getProjects();
+const slides = [...projects].sort((a, b) => {
+  const ia = preferred.indexOf(a.id), ib = preferred.indexOf(b.id);
+  return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+});
+const total = pad2(projects.length);
+---
+
+<section id="top" class="relative overflow-hidden pt-20 lg:flex lg:min-h-[min(100svh,64rem)] lg:items-center lg:pt-24" aria-labelledby="hero-title">
+  <div class="container-x grid items-center gap-10 pb-16 lg:grid-cols-2 lg:gap-16 lg:pb-12">
+    <!-- Text -->
+    <div class="lg:py-10">
+      <p class="eyebrow latin hero-in rtl:text-right" style="--d:0ms" dir="ltr">{s.hero.eyebrow}</p>
+      <h1 id="hero-title" class="display hero-in mt-4 text-[clamp(3.6rem,13vw,8rem)] text-ink lang-en:text-[clamp(3.2rem,11vw,6.6rem)]" style="--d:120ms">{s.name}</h1>
+      <p class="serif hero-in mt-2 text-[clamp(1.25rem,3.6vw,2.3rem)] tracking-[0.18em] text-muted" style="--d:220ms" lang={lang === 'ar' ? 'en' : 'ar'}>{s.nameEn}</p>
+      <span class="hero-in mt-6 block h-px w-20 bg-terra" style="--d:300ms"></span>
+      <p class="hero-in mt-6 text-lg text-ink/85 lg:text-xl" style="--d:360ms">{s.hero.subtitle}</p>
+      <div class="hero-in mt-9 flex flex-wrap gap-3" style="--d:460ms">
+        <a href="#works" class="btn btn-primary">{s.hero.ctaWorks}</a>
+        <a href={waLink(s.waMessage)} target="_blank" rel="noopener" class="btn btn-outline">{s.hero.ctaBook}</a>
+      </div>
+    </div>
+
+    <!-- Arch slideshow of the work (first on phones) -->
+    <div class="hero-in order-first mx-auto w-full max-w-[21rem] sm:max-w-[25rem] lg:order-none lg:max-w-[31rem]" style="--d:60ms">
+      <div class="arch pt-4">
+        <div class="arch-inner relative aspect-[4/5] bg-sand" id="hero-slides">
+          {slides.map((p, i) => (
+            <div class:list={['slide absolute inset-0', i === 0 && 'is-active']} data-index={i} aria-hidden={i === 0 ? 'false' : 'true'}>
+              <Picture
+                src={p.data.cover}
+                formats={['avif', 'webp']}
+                widths={[400, 640, 900, 1200]}
+                sizes="(min-width: 1024px) 31rem, (min-width: 640px) 25rem, 21rem"
+                alt={s.project.coverAlt(p.data.title[lang])}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : 'low'}
+                class="slide-img h-full w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- caption: project number + name, progress, pause -->
+      <div class="mt-5 flex items-center gap-4">
+        <span class="num text-2xl leading-none" dir="ltr"><span id="hero-num">{pad2(slides[0].data.order)}</span><span class="text-muted/70"> / {total}</span></span>
+        <div class="min-w-0 flex-1">
+          <a id="hero-link" href={pathFor(lang, `/projects/${slides[0].id}/`)} class="block truncate text-sm font-medium hover:text-terra-dark">{slides[0].data.title[lang]}</a>
+          <div class="mt-2 h-px w-full bg-line"><div id="hero-progress" class="h-px w-0 bg-terra"></div></div>
+        </div>
+        <button id="hero-pause" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink/70 transition-colors hover:border-terra hover:text-terra" aria-pressed="false" aria-label={lang === 'ar' ? 'إيقاف عرض الصور مؤقتًا' : 'Pause slideshow'}>
+          <svg class="icon-pause" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2v8M9 2v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+          <svg class="icon-play hidden" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 2.2v7.6L10 6z" fill="currentColor" /></svg>
+        </button>
+      </div>
+      <script type="application/json" id="hero-data" set:html={JSON.stringify(slides.map((p) => ({ n: pad2(p.data.order), title: p.data.title[lang], href: pathFor(lang, `/projects/${p.id}/`) })))} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-in {
+    animation: heroIn 1.1s var(--ease-soft) both;
+    animation-delay: var(--d);
+  }
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  .slide {
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-soft);
+  }
+  .slide.is-active {
+    opacity: 1;
+  }
+  .slide-img {
+    transform: scale(1.02);
+    transition: transform 7s linear;
+  }
+  .slide.is-active .slide-img {
+    transform: scale(1.09);
+  }
+  #hero-progress.run {
+    width: 100%;
+    transition: width var(--dur, 5500ms) linear;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .slide-img, .slide.is-active .slide-img { transform: none; }
+  }
+</style>
+
+<script>
+  const DURATION = 5500;
+  const root = document.getElementById('hero-slides');
+  const slides = root ? [...root.querySelectorAll<HTMLElement>('.slide')] : [];
+  const data = JSON.parse(document.getElementById('hero-data')?.textContent || '[]');
+  const num = document.getElementById('hero-num')!;
+  const link = document.getElementById('hero-link') as HTMLAnchorElement;
+  const progress = document.getElementById('hero-progress')!;
+  const pauseBtn = document.getElementById('hero-pause')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let i = 0;
+  let timer: number | undefined;
+  let paused = reduce;
+
+  const runProgress = () => {
+    progress.classList.remove('run');
+    void progress.offsetWidth;
+    if (!paused) { progress.style.setProperty('--dur', DURATION + 'ms'); progress.classList.add('run'); }
+  };
+  const show = (n: number) => {
+    slides[i].classList.remove('is-active');
+    slides[i].setAttribute('aria-hidden', 'true');
+    i = (n + slides.length) % slides.length;
+    slides[i].classList.add('is-active');
+    slides[i].setAttribute('aria-hidden', 'false');
+    num.textContent = data[i].n;
+    link.textContent = data[i].title;
+    link.href = data[i].href;
+    runProgress();
+  };
+  const schedule = () => {
+    clearInterval(timer);
+    if (!paused) timer = window.setInterval(() => show(i + 1), DURATION);
+  };
+  const setPaused = (p: boolean) => {
+    paused = p;
+    pauseBtn.setAttribute('aria-pressed', String(p));
+    pauseBtn.querySelector('.icon-pause')!.classList.toggle('hidden', p);
+    pauseBtn.querySelector('.icon-play')!.classList.toggle('hidden', !p);
+    runProgress();
+    schedule();
+  };
+
+  if (slides.length > 1) {
+    pauseBtn.addEventListener('click', () => setPaused(!paused));
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clearInterval(timer); else schedule(); });
+    setPaused(paused);
+  } else {
+    pauseBtn.remove();
+  }
+</script>

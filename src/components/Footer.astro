@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+import { t, contact, waLink, type Lang } from '../i18n/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t[lang];
+const socials = [
+  { href: waLink(s.waMessage), icon: 'whatsapp', label: s.contactSec.whatsapp },
+  { href: contact.instagram, icon: 'instagram', label: s.contactSec.instagram },
+  { href: contact.tiktok, icon: 'tiktok', label: s.contactSec.tiktok },
+  { href: `mailto:${contact.email}`, icon: 'mail', label: s.contactSec.email },
+] as const;
+---
+
+<footer class="bg-ink text-cream">
+  <div class="container-x flex flex-col gap-10 py-14 md:flex-row md:items-end md:justify-between md:py-16">
+    <div>
+      <p class="serif text-5xl leading-none md:text-6xl">Mohammed Qasir</p>
+      <p class="mt-3 text-cream/70">محمد قصير — {lang === 'ar' ? 'مصور فوتوغرافي وصانع محتوى' : 'Photographer & Content Creator'}</p>
+    </div>
+    <div class="flex flex-col gap-6 md:items-end">
+      <ul class="flex gap-3">
+        {socials.map((x) => (
+          <li>
+            <a href={x.href} target={x.icon === 'mail' ? undefined : '_blank'} rel="noopener" aria-label={x.label} class="grid h-11 w-11 place-items-center rounded-full border border-cream/25 transition-colors hover:border-terra hover:bg-terra hover:text-on-terra">
+              <Icon name={x.icon} size={19} />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="text-sm text-cream/60" dir="ltr">{s.footer.rights}</p>
+    </div>
+  </div>
+</footer>

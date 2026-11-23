@@ -1,0 +1,23 @@
+---
+import { t, type Lang } from '../../i18n/site';
+import { pad2 } from '../../lib/projects';
+interface Props { lang: Lang }
+const s = t[Astro.props.lang];
+---
+
+<section id="skills" class="py-24 md:py-32" aria-labelledby="skills-title">
+  <div class="container-x grid gap-10 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <p class="eyebrow reveal">{s.skills.eyebrow}</p>
+      <h2 id="skills-title" class="display reveal mt-3 text-[clamp(2.6rem,7vw,4.5rem)]" style="--delay:80ms">{s.skills.title}</h2>
+    </div>
+    <ol class="md:col-span-8">
+      {s.skills.items.map((it, i) => (
+        <li class="reveal group flex items-baseline gap-6 border-b border-line py-6 first:border-t md:py-8" style={`--delay:${i * 80}ms`}>
+          <span class="num text-2xl md:text-3xl">{pad2(i + 1)}</span>
+          <span class="text-2xl font-medium transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 md:text-4xl">{it}</span>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

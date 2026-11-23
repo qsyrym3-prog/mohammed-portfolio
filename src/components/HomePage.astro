@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from './home/Hero.astro';
+import About from './home/About.astro';
+import Works from './home/Works.astro';
+import Services from './home/Services.astro';
+import Skills from './home/Skills.astro';
+import Offer from './home/Offer.astro';
+import Contact from './home/Contact.astro';
+import type { Lang } from '../i18n/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+
+<BaseLayout lang={lang} path="/">
+  <Hero lang={lang} />
+  <About lang={lang} />
+  <Works lang={lang} />
+  <Services lang={lang} />
+  <Skills lang={lang} />
+  <Offer lang={lang} />
+  <Contact lang={lang} />
+</BaseLayout>

@@ -1,0 +1,189 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import VideoPlayer from './VideoPlayer.astro';
+import Icon from './Icon.astro';
+import { t, waLink, pathFor, type Lang } from '../i18n/site';
+import { getGallery, pad2, type Project } from '../lib/projects';
+
+interface Props {
+  lang: Lang;
+  project: Project;
+  next: Project;
+}
+const { lang, project, next } = Astro.props;
+const s = t[lang];
+const d = project.data;
+const title = d.title[lang];
+const hasVideo = d.type !== 'photo';
+
+// Gallery = every image in the project's images/ folder, except the cover (already shown big above)
+const all = getGallery(project.id);
+const gallery = all.filter((img) => img.src !== d.cover.src);
+const items = await Promise.all(
+  (gallery.length ? gallery : all).map(async (img, i) => {
+    const w = Math.min(2000, img.width);
+    const large = await getImage({ src: img, width: w, format: 'webp', quality: 82 });
+    return { img, large: large.src, w, h: Math.round((img.height / img.width) * w), alt: s.project.alt(title, i + 1) };
+  }),
+);
+
+const ogImage = (await getImage({ src: d.cover, width: 1200, height: 630, fit: 'cover', format: 'jpg' })).src;
+const pageTitle = lang === 'ar' ? `${title} | محمد قصير — مصور في جدة` : `${title} | Mohammed Qasir — Jeddah Photographer`;
+const path = `/projects/${project.id}/`;
+const meta = [
+  { label: s.project.client, value: d.client[lang] },
+  { label: s.project.category, value: s.categories[d.category] + (d.sports ? ` · ${s.works.sports}` : '') },
+  { label: s.project.type, value: s.works.types[d.type] },
+];
+// video-only projects show the video before the photos, photo+video projects after them
+const videoFirst = d.type === 'video';
+---
+
+<BaseLayout lang={lang} path={path} title={pageTitle} description={d.description[lang]} ogImage={ogImage}>
+  <!-- Intro -->
+  <section class="container-x pt-28 md:pt-36">
+    <a href={pathFor(lang, '/#works')} class="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-terra-dark">
+      <Icon name="arrow" size={16} class="ltr:-scale-x-100" />
+      {s.project.back}
+    </a>
+    <div class="mt-8 grid gap-8 md:mt-12 md:grid-cols-12 md:items-end">
+      <div class="md:col-span-8">
+        <span class="num hero-in block text-[clamp(4rem,14vw,9rem)] leading-[0.85]">{pad2(d.order)}</span>
+        <h1 class="display hero-in mt-4 text-[clamp(2.2rem,6.5vw,4.8rem)]" style="--d:100ms">{title}</h1>
+      </div>
+      <p class="hero-in text-lg leading-[1.9] text-muted md:col-span-4 md:pb-3" style="--d:180ms">{d.description[lang]}</p>
+    </div>
+    <dl class="hero-in mt-10 grid grid-cols-3 border-y border-line py-5 text-sm md:mt-14" style="--d:240ms">
+      {meta.map((m, i) => (
+        <div class:list={['px-1', i > 0 && 'border-s border-line ps-4']}>
+          <dt class="text-muted">{m.label}</dt>
+          <dd class="mt-1 font-medium text-ink">{m.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <!-- Full-width cover -->
+  <div class="hero-in mt-10 md:mt-14" style="--d:300ms">
+    <Picture
+      src={d.cover}
+      formats={['avif', 'webp']}
+      widths={[640, 1000, 1600, 2400]}
+      sizes="100vw"
+      alt={s.project.coverAlt(title)}
+      loading="eager"
+      fetchpriority="high"
+      class="max-h-[85svh] w-full object-cover"
+    />
+  </div>
+
+  {hasVideo && videoFirst && (
+    <section class="container-x py-14 md:py-20" aria-labelledby="video-title">
+      <h2 id="video-title" class="eyebrow mb-6">{s.project.video}</h2>
+      <VideoPlayer youtube={d.youtube} vimeo={d.vimeo} poster={d.videoPoster ?? d.cover} title={title} playLabel={s.project.play} comingSoonLabel={s.project.comingSoon} />
+    </section>
+  )}
+
+  <!-- Masonry gallery + lightbox -->
+  {items.length > 0 && (
+    <section class="container-x py-14 md:py-20" aria-labelledby="gallery-title">
+      <h2 id="gallery-title" class="eyebrow mb-6">{s.project.gallery}</h2>
+      <div id="gallery" class="columns-2 gap-3 md:gap-4 lg:columns-3 [&>*]:mb-3 md:[&>*]:mb-4">
+        {items.map((it, i) => (
+          <a
+            href={it.large}
+            data-pswp-width={it.w}
+            data-pswp-height={it.h}
+            data-alt={it.alt}
+            class="reveal group block break-inside-avoid overflow-hidden rounded-[2px] bg-sand"
+            style={`--delay:${(i % 3) * 70}ms`}
+            aria-label={it.alt}
+          >
+            <Picture src={it.img} formats={['avif', 'webp']} widths={[400, 700, 1000]} sizes="(min-width: 1024px) 33vw, 50vw" alt={it.alt} class="zoom-img w-full" />
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {hasVideo && !videoFirst && (
+    <section class="container-x pb-14 md:pb-20" aria-labelledby="video-title">
+      <h2 id="video-title" class="eyebrow mb-6">{s.project.video}</h2>
+      <VideoPlayer youtube={d.youtube} vimeo={d.vimeo} poster={d.videoPoster ?? d.cover} title={title} playLabel={s.project.play} comingSoonLabel={s.project.comingSoon} />
+    </section>
+  )}
+
+  <!-- CTA + next project -->
+  <section class="container-x pb-24 md:pb-32">
+    <div class="grid gap-4 md:grid-cols-2">
+      <a href={waLink(s.project.waMessage(title))} target="_blank" rel="noopener" class="group flex flex-col justify-between gap-10 rounded-[2px] bg-ink p-8 text-cream transition-colors hover:bg-[#2a231e] md:p-10">
+        <span class="text-[clamp(1.8rem,4vw,2.8rem)] font-medium leading-tight">{s.project.ctaTitle}</span>
+        <span class="btn btn-primary self-start"><Icon name="whatsapp" size={18} />{s.project.cta}</span>
+      </a>
+      <a href={pathFor(lang, `/projects/${next.id}/`)} class="group relative flex min-h-64 flex-col justify-end overflow-hidden rounded-[2px] bg-sand p-8 text-cream md:p-10">
+        <Picture src={next.data.cover} formats={['avif', 'webp']} widths={[500, 900]} sizes="(min-width: 768px) 50vw, 100vw" alt="" class="zoom-img absolute inset-0 h-full w-full object-cover" />
+        <span class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/30 to-transparent"></span>
+        <span class="relative text-sm text-cream/80">{s.project.next}</span>
+        <span class="relative mt-2 flex items-end justify-between gap-4">
+          <span class="text-2xl font-medium md:text-3xl"><span class="serif me-2 text-[#E9A88F]">{pad2(next.data.order)}</span>{next.data.title[lang]}</span>
+          <Icon name="arrow" size={26} class="shrink-0 transition-transform duration-500 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" />
+        </span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-in {
+    animation: heroIn 1s var(--ease-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+  @keyframes heroIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import 'photoswipe/style.css';
+
+  const gallery = document.getElementById('gallery');
+  if (gallery) {
+    const rtl = document.documentElement.dir === 'rtl';
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#gallery',
+      children: 'a',
+      pswpModule: () => import('photoswipe'),
+      bgOpacity: 1,
+      showHideAnimationType: 'fade',
+      paddingFn: (vp) => (vp.x < 700 ? { top: 0, bottom: 0, left: 0, right: 0 } : { top: 40, bottom: 40, left: 70, right: 70 }),
+      arrowPrevTitle: rtl ? 'السابق' : 'Previous',
+      arrowNextTitle: rtl ? 'التالي' : 'Next',
+      closeTitle: rtl ? 'إغلاق' : 'Close',
+      zoomTitle: rtl ? 'تكبير' : 'Zoom',
+    });
+    lightbox.addFilter('itemData', (itemData) => {
+      const el = itemData.element as HTMLElement | undefined;
+      if (el?.dataset.alt) itemData.alt = el.dataset.alt;
+      return itemData;
+    });
+    lightbox.init();
+  }
+</script>
+
+<style is:global>
+  .pswp {
+    --pswp-bg: #1f1a16;
+    --pswp-icon-color: #f3ede3;
+    --pswp-icon-color-secondary: #1f1a16;
+  }
+  .pswp__counter {
+    font-family: 'Inter', sans-serif;
+    direction: ltr;
+  }
+  .pswp__button--arrow:hover .pswp__icn {
+    fill: #e9a88f;
+  }
+</style>

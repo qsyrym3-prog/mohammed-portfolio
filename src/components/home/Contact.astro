@@ -1,0 +1,50 @@
+---
+import Icon from '../Icon.astro';
+import { t, contact, waLink, type Lang } from '../../i18n/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = t[lang];
+const c = s.contactSec;
+const items = [
+  { href: `mailto:${contact.email}`, icon: 'mail', label: c.email, value: contact.email, external: false },
+  { href: contact.phoneHref, icon: 'phone', label: c.phone, value: contact.phoneDisplay, external: false },
+  { href: contact.instagram, icon: 'instagram', label: c.instagram, value: contact.instagramHandle, external: true },
+  { href: contact.tiktok, icon: 'tiktok', label: c.tiktok, value: contact.tiktokHandle, external: true },
+] as const;
+---
+
+<section id="contact" class="py-24 md:py-32" aria-labelledby="contact-title">
+  <div class="container-x">
+    <p class="eyebrow reveal">{c.eyebrow}</p>
+    <h2 id="contact-title" class="display reveal mt-3 text-[clamp(2.8rem,9vw,6.5rem)]" style="--delay:80ms">{c.title}</h2>
+    <p class="serif reveal mt-3 text-[clamp(1.4rem,3.5vw,2.4rem)] italic text-muted" style="--delay:140ms" lang={lang === 'ar' ? 'en' : 'ar'}>{c.titleEn}</p>
+
+    <div class="mt-14 grid gap-4 md:mt-20 md:grid-cols-2">
+      <a href={waLink(s.waMessage)} target="_blank" rel="noopener" class="reveal group flex items-center justify-between gap-6 rounded-[2px] bg-terra p-7 text-on-terra transition-colors hover:bg-terra-dark md:row-span-2 md:flex-col md:items-start md:p-10">
+        <span class="grid h-14 w-14 place-items-center rounded-full bg-on-terra/15 md:h-16 md:w-16"><Icon name="whatsapp" size={30} /></span>
+        <span class="flex-1 md:flex md:w-full md:items-end md:justify-between">
+          <span class="block">
+            <span class="block text-2xl font-medium md:text-4xl">{c.whatsapp}</span>
+            <span class="mt-1 block text-on-terra/80">{c.whatsappSub}</span>
+          </span>
+          <Icon name="arrow" size={28} class="hidden transition-transform duration-500 group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1 md:block" />
+        </span>
+      </a>
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {items.map((it, i) => (
+          <li class="reveal" style={`--delay:${(i + 1) * 70}ms`}>
+            <a href={it.href} target={it.external ? '_blank' : undefined} rel={it.external ? 'noopener' : undefined} class="group flex h-full items-center gap-4 rounded-[2px] border border-line bg-card p-5 transition-colors hover:border-terra md:p-6">
+              <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-line text-terra transition-colors group-hover:border-terra group-hover:bg-terra group-hover:text-on-terra"><Icon name={it.icon} size={20} /></span>
+              <span class="min-w-0">
+                <span class="block text-sm text-muted">{it.label}</span>
+                <span class:list={['block font-medium [overflow-wrap:anywhere] rtl:text-right', it.icon === 'mail' && 'text-[0.9rem]']} dir="ltr">
+                  {it.icon === 'mail' ? <Fragment>{it.value.split('@')[0]}<wbr />@{it.value.split('@')[1]}</Fragment> : it.value}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

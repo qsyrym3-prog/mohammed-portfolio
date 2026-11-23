@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout lang="ar" path="/404/" title="الصفحة غير موجودة | محمد قصير" description="الصفحة اللي تدورها غير موجودة.">
+  <section class="container-x flex min-h-[80svh] flex-col items-center justify-center pt-24 text-center">
+    <span class="num text-[clamp(6rem,24vw,13rem)] leading-none">404</span>
+    <h1 class="display mt-4 text-3xl md:text-5xl">الصفحة غير موجودة</h1>
+    <p class="serif mt-2 text-xl italic text-muted" lang="en">Page not found</p>
+    <div class="mt-10 flex flex-wrap justify-center gap-3">
+      <a href="/" class="btn btn-primary">الرئيسية</a>
+      <a href="/en/" class="btn btn-outline" lang="en">Home</a>
+    </div>
+  </section>
+</BaseLayout>
