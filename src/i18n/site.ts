@@ -23,7 +23,7 @@ export const t = {
     meta: {
       title: 'محمد قصير | مصور فوتوغرافي في جدة — Mohammed Qasir Photographer',
       description:
-        'محمد قصير، مصور فوتوغرافي وصانع محتوى في جدة: تصوير منتجات، تصوير مطاعم وكافيهات، تغطية فعاليات وحفلات، وتصوير رياضي. احجز جلسة تصوير مجانية.',
+        'محمد قصير، مصور فوتوغرافي وصانع محتوى في جدة: تصوير منتجات، تصوير مطاعم وكافيهات، تغطية فعاليات وحفلات، وتصوير رياضي. احجز جلسة تصوير.',
     },
     name: 'محمد قصير',
     nameEn: 'MOHAMMED QASIR',
@@ -37,7 +37,7 @@ export const t = {
       eyebrow: 'PHOTOGRAPHER & CONTENT CREATOR',
       subtitle: 'مصور فوتوغرافي وصانع محتوى — جدة',
       ctaWorks: 'شوف أعمالي',
-      ctaBook: 'احجز جلسة مجانية',
+      ctaBook: 'احجز جلسة تصوير',
       imageAlt: 'محمد قصير داخل إطار على شكل قوس',
     },
     about: {
@@ -82,9 +82,9 @@ export const t = {
       items: ['التصوير الفوتوغرافي', 'تصوير الفيديو والمونتاج', 'التصميم الجرافيكي (خبرة سنتين)', 'إدارة السوشيال ميديا'],
     },
     offer: {
-      eyebrow: 'عرض خاص',
-      title: 'جلسات تصوير مجانية لفترة محدودة!',
-      text: 'لأني أبني أعمالي حاليًا، أقدم جلسات مجانية للمشاريع والمحلات اللي تبغى محتوى مميز.',
+      eyebrow: 'احجز الآن',
+      title: 'خلّنا نصنع محتوى يليق بمشروعك',
+      text: 'منتج، مطعم، كافيه أو فعالية: أصوّر لك محتوى احترافي جاهز للسوشيال ميديا من أول لقطة. تواصل معي ونتفق على التفاصيل.',
       cta: 'احجز جلستك',
     },
     contactSec: {
@@ -124,7 +124,7 @@ export const t = {
     meta: {
       title: 'Mohammed Qasir | Photographer in Jeddah — محمد قصير مصور فوتوغرافي',
       description:
-        'Mohammed Qasir — photographer & content creator in Jeddah, Saudi Arabia. Product photography, restaurant & café videos, event coverage and sports photography. Book a free session.',
+        'Mohammed Qasir — photographer & content creator in Jeddah, Saudi Arabia. Product photography, restaurant & café videos, event coverage and sports photography. Book a session.',
     },
     name: 'Mohammed Qasir',
     nameEn: 'محمد قصير',
@@ -138,7 +138,7 @@ export const t = {
       eyebrow: 'PHOTOGRAPHER & CONTENT CREATOR',
       subtitle: 'Photographer & Content Creator — Jeddah',
       ctaWorks: 'See my work',
-      ctaBook: 'Book a free session',
+      ctaBook: 'Book a session',
       imageAlt: 'Mohammed Qasir inside an arch frame',
     },
     about: {
@@ -183,9 +183,9 @@ export const t = {
       items: ['Photography', 'Videography & Editing', 'Graphic Design (2 years)', 'Social Media Management'],
     },
     offer: {
-      eyebrow: 'Special offer',
-      title: 'Free photo sessions for a limited time!',
-      text: "I'm currently building my portfolio and offering free sessions to businesses looking for great content. Get in touch to book yours.",
+      eyebrow: 'Book now',
+      title: "Let's create content worthy of your brand",
+      text: "Products, restaurants, cafés or events: professional content that's social-media ready from the first frame. Get in touch and let's plan the details.",
       cta: 'Book your session',
     },
     contactSec: {
