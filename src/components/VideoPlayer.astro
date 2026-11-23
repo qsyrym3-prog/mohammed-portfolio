@@ -24,20 +24,20 @@ const embed = yt
     : null;
 ---
 
-<div class="video-player relative aspect-video w-full overflow-hidden rounded-[2px] bg-ink">
+<div class="video-player relative aspect-video w-full overflow-hidden rounded-[2px] bg-black">
   <Picture src={poster} formats={['avif', 'webp']} widths={[640, 1000, 1600]} sizes="(min-width: 1280px) 76rem, 100vw" alt="" class="absolute inset-0 h-full w-full object-cover" />
   {embed ? (
-    <button type="button" class="video-play group absolute inset-0 grid place-items-center bg-ink/25 transition-colors hover:bg-ink/35" data-embed={embed} data-title={title} aria-label={`${playLabel}: ${title}`}>
+    <button type="button" class="video-play group absolute inset-0 grid place-items-center bg-black/25 transition-colors hover:bg-black/35" data-embed={embed} data-title={title} aria-label={`${playLabel}: ${title}`}>
       <span class="grid h-20 w-20 place-items-center rounded-full bg-terra text-on-terra shadow-xl transition-transform duration-500 group-hover:scale-105 md:h-24 md:w-24">
         <Icon name="play" size={34} class="ms-1" />
       </span>
     </button>
   ) : (
-    <div class="absolute inset-0 grid place-items-center bg-ink/55">
-      <div class="text-center text-cream">
-        <span class="mx-auto grid h-16 w-16 place-items-center rounded-full border border-cream/40"><Icon name="video" size={26} /></span>
+    <div class="absolute inset-0 grid place-items-center bg-black/55">
+      <div class="text-center text-white">
+        <span class="mx-auto grid h-16 w-16 place-items-center rounded-full border border-white/40"><Icon name="video" size={26} /></span>
         <p class="mt-4 text-xl font-medium md:text-2xl">{comingSoonLabel}</p>
-        <p class="serif mt-1 text-lg italic text-cream/70" lang="en">Coming soon</p>
+        <p class="serif mt-1 text-lg italic text-white/75" lang="en">Coming soon</p>
       </div>
     </div>
   )}

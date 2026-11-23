@@ -31,9 +31,9 @@ h1{font:700 88px/1.05 Plex;color:#1F1A16;margin-top:18px}
 <div class="s" dir="rtl">مصور فوتوغرافي وصانع محتوى — جدة</div></div></body></html>`;
 
 const icon = (size) => `<!doctype html><html><head><style>${fonts}
-body{width:${size}px;height:${size}px;background:#F3EDE3;display:grid;place-items:center;position:relative;overflow:hidden}
+body{width:${size}px;height:${size}px;background:#0E0D0C;display:grid;place-items:center;position:relative;overflow:hidden}
 .a{position:absolute;left:${size * 0.2}px;right:${size * 0.2}px;top:${size * 0.12}px;bottom:-2px;border:${Math.max(1.5, size / 40)}px solid #B5573A;border-bottom:0;border-radius:999px 999px 0 0}
-span{position:relative;font:600 ${size * 0.42}px Corm;color:#B5573A;letter-spacing:-.03em;margin-top:${size * 0.1}px}
+span{position:relative;font:600 ${size * 0.42}px Corm;color:#E08A6C;letter-spacing:-.03em;margin-top:${size * 0.1}px}
 </style></head><body><div class="a"></div><span>MQ</span></body></html>`;
 
 const browser = await puppeteer.launch({ executablePath: process.env.EDGE_PATH || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe' });

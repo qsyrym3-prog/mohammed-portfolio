@@ -57,7 +57,7 @@ const total = pad2(projects.length);
       <div class="mt-5 flex items-center gap-4">
         <span class="num text-2xl leading-none" dir="ltr"><span id="hero-num">{pad2(slides[0].data.order)}</span><span class="text-muted/70"> / {total}</span></span>
         <div class="min-w-0 flex-1">
-          <a id="hero-link" href={pathFor(lang, `/projects/${slides[0].id}/`)} class="block truncate text-sm font-medium hover:text-terra-dark">{slides[0].data.title[lang]}</a>
+          <a id="hero-link" href={pathFor(lang, `/projects/${slides[0].id}/`)} class="block truncate text-sm font-medium hover:text-terra-light">{slides[0].data.title[lang]}</a>
           <div class="mt-2 h-px w-full bg-line"><div id="hero-progress" class="h-px w-0 bg-terra"></div></div>
         </div>
         <button id="hero-pause" type="button" class="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-line text-ink/70 transition-colors hover:border-terra hover:text-terra" aria-pressed="false" aria-label={lang === 'ar' ? 'إيقاف عرض الصور مؤقتًا' : 'Pause slideshow'}>

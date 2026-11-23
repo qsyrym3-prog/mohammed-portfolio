@@ -2,15 +2,19 @@
 
 @custom-variant lang-en (&:lang(en));
 
+/* Dark theme. Token names are kept from the first (cream) design:
+   cream = page background, sand = alternate section background, card = cards,
+   ink = main text, muted = secondary text, line = dividers. */
 @theme {
-  --color-cream: #f3ede3;
-  --color-sand: #e4d8c6;
-  --color-card: #fbf8f3;
-  --color-ink: #1f1a16;
-  --color-muted: #6b6159;
-  --color-line: #d9ccb9;
+  --color-cream: #0e0d0c;
+  --color-sand: #171513;
+  --color-card: #1e1b18;
+  --color-ink: #f3ede3;
+  --color-muted: #a89e94;
+  --color-line: #2e2925;
   --color-terra: #b5573a;
   --color-terra-dark: #9a4529;
+  --color-terra-light: #e08a6c;
   --color-on-terra: #fff7ef;
 
   --font-ar: 'IBM Plex Sans Arabic', system-ui, sans-serif;
@@ -51,11 +55,11 @@
   }
 }
 
-/* Very light paper grain — a tiny static SVG tile on the light backgrounds only
+/* Very light film grain — a tiny static SVG tile on the backgrounds only
    (never on top of the photos), no runtime cost */
 body,
 .grain {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .1 0 0 0 0 .08 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .95 0 0 0 0 .92 0 0 0 0 .88 0 0 0 .045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 @layer components {
@@ -78,8 +82,8 @@ body,
     font-weight: 500;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    /* darker terracotta for small text = AA contrast on cream & sand */
-    color: var(--color-terra-dark);
+    /* lighter terracotta for small text = AA contrast on the dark background */
+    color: var(--color-terra-light);
   }
   html[lang='ar'] .eyebrow:not(.latin) {
     font-family: var(--font-ar);
@@ -133,7 +137,7 @@ body,
   }
   .btn-outline {
     border: 1.5px solid var(--color-terra);
-    color: var(--color-terra-dark);
+    color: var(--color-terra-light);
   }
   .btn-outline:hover {
     background: var(--color-terra);

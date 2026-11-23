@@ -5,16 +5,17 @@ interface Props { lang: Lang }
 const s = t[Astro.props.lang];
 ---
 
-<section class="relative overflow-hidden bg-ink text-cream" aria-labelledby="offer-title">
+<!-- Terracotta banner = the one bright block on the dark site -->
+<section class="relative overflow-hidden bg-terra text-on-terra" aria-labelledby="offer-title">
   <!-- decorative arch outlines -->
-  <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 end-[-6rem] h-[34rem] w-[22rem] rounded-t-full border border-terra/50 md:end-16"></div>
-  <div aria-hidden="true" class="pointer-events-none absolute -bottom-44 end-[-3rem] h-[34rem] w-[22rem] rounded-t-full border border-cream/10 md:end-28"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute -bottom-40 end-[-6rem] h-[34rem] w-[22rem] rounded-t-full border border-on-terra/45 md:end-16"></div>
+  <div aria-hidden="true" class="pointer-events-none absolute -bottom-44 end-[-3rem] h-[34rem] w-[22rem] rounded-t-full border border-on-terra/15 md:end-28"></div>
 
   <div class="relative container-x py-24 md:py-32">
-    <p class="eyebrow reveal !text-[#E08A6C]">{s.offer.eyebrow}</p>
+    <p class="eyebrow reveal !text-on-terra">{s.offer.eyebrow}</p>
     <h2 id="offer-title" class="display reveal mt-5 max-w-4xl text-[clamp(2.4rem,7vw,5.2rem)]" style="--delay:80ms">{s.offer.title}</h2>
-    <p class="reveal mt-6 max-w-2xl text-lg leading-[1.9] text-cream/75 md:text-xl" style="--delay:160ms">{s.offer.text}</p>
-    <a href={waLink(s.waMessage)} target="_blank" rel="noopener" class="btn btn-primary reveal mt-10 !min-h-14 !px-8 text-base" style="--delay:240ms">
+    <p class="reveal mt-6 max-w-2xl text-lg leading-[1.9] text-on-terra md:text-xl" style="--delay:160ms">{s.offer.text}</p>
+    <a href={waLink(s.waMessage)} target="_blank" rel="noopener" class="btn reveal mt-10 !min-h-14 bg-[#0e0d0c] !px-8 text-base text-[#f3ede3] hover:bg-black" style="--delay:240ms">
       <Icon name="whatsapp" size={20} />
       {s.offer.cta}
     </a>
