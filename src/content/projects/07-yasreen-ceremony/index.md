@@ -13,5 +13,5 @@ description:
   en: "Photo and video coverage of Yasreen Real Estate's marketers awards night — the honors, the group photo and the evening's atmosphere."
 cover: ./images/01.jpg
 videoPoster: ./video-poster.jpg
-youtube: ""
+youtube: "https://youtu.be/hu-Pcp6ItgU"
 ---
