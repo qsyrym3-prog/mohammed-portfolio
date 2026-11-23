@@ -8,9 +8,11 @@ const s = t[lang];
 
 // Cover slideshow = the cover photo of each project. Order of the slides (by folder name);
 // projects not listed here are added at the end automatically.
-const preferred = ['04-rixos-national-day', '01-lino-enab', '05-hybrid-marathon-rixos', '02-smash-burger', '06-f4-aramco', '03-coffee-mood', '07-yasreen-ceremony'];
+const preferred = ['04-rixos-national-day', '05-hybrid-marathon-rixos', '02-smash-burger', '06-f4-aramco', '03-coffee-mood', '07-yasreen-ceremony'];
+// Projects that should NOT appear in the cover slideshow (they still appear in "My work")
+const hiddenFromSlideshow = ['01-lino-enab'];
 const projects = await getProjects();
-const slides = [...projects].sort((a, b) => {
+const slides = projects.filter((p) => !hiddenFromSlideshow.includes(p.id)).sort((a, b) => {
   const ia = preferred.indexOf(a.id), ib = preferred.indexOf(b.id);
   return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
 });
