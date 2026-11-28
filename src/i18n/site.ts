@@ -52,7 +52,7 @@ export const t = {
       ],
       imageAlt: 'صورة شخصية لمحمد قصير',
       stats: [
-        { value: 7, prefix: '+', label: 'مشاريع' },
+        { value: 8, prefix: '+', label: 'مشاريع' },
         { value: 2, prefix: '', label: 'سنين تصميم جرافيكي' },
         { value: 4, prefix: '', label: 'خدمات' },
       ],
@@ -153,7 +153,7 @@ export const t = {
       ],
       imageAlt: 'Portrait of Mohammed Qasir',
       stats: [
-        { value: 7, prefix: '+', label: 'Projects' },
+        { value: 8, prefix: '+', label: 'Projects' },
         { value: 2, prefix: '', label: 'Years of graphic design' },
         { value: 4, prefix: '', label: 'Services' },
       ],
